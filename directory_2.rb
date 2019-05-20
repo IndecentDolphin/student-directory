@@ -1,5 +1,5 @@
 # variables
-students_array_backup  = [
+students_array  = [
   {name: "Dr. Hannibal Lecter", cohort: :november},
   {name: "Darth Vader", cohort: :november},
   {name: "Nurse Ratched", cohort: :november},
@@ -13,21 +13,7 @@ students_array_backup  = [
   {name: "Norman Bates", cohort: :november}
 ]
 
-students_array = []
 
-
-def add_student
-  student = []
-  puts "enter names of students to add"
-  puts "when finished hit return twice"
-  name = gets.chomp
-
-  while !name.empty? do
-    student << {name: name, cohort: :november}
-    name = gets.chomp
-  end
-  student
-end
 
 def print_header
   puts "The students of Villains Academy"
@@ -35,9 +21,11 @@ def print_header
 end
 
 def print_student_list(names)
-  # Here is the list of students
-  names.each do |student|
-    puts "#{student[:name]} #{student[:cohort]} cohort"
+  # Here is the list of students, printed with index, and configured to select student based on Initial name letter
+  names.each_with_index do |student, index|
+    if student[:name].start_with?("T")
+      puts "#{index + 1}. #{student[:name]} #{student[:cohort]} cohort"
+    end
   end
 end
 
@@ -46,7 +34,6 @@ def print_footer(names)
   puts "Overall, we have #{names.count} great students"
 end
 
-students_array = add_student
 print_header
 print_student_list(students_array)
 print_footer(students_array)
