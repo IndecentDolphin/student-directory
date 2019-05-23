@@ -1,5 +1,6 @@
-# variables
-students_array = []
+
+# TODO: rewrite the user input loop cause its a bit mad right now.
+
 
 
 def add_student
@@ -11,17 +12,22 @@ def add_student
     cohort = gets.chomp
   puts "what is their country of origin"
     c_o_o = gets.chomp
-  puts "what is their hobbies"
-  if cohort.empty?
-    cohort = "november"
-  elsif c_o_o.empty?
-    c_o_o = "N/A"
-  end
   while !name.empty? do
-    cohort.to_sym!
+    if cohort.empty?
+      cohort = "november"
+    elsif c_o_o.empty?
+      c_o_o = "N/A"
+    end
+    cohort = cohort.to_sym
     student << {name: name, cohort: cohort, country_of_origin: c_o_o}
+    puts "name:"
     name = gets.chomp
+    if name.empty?
+      break
+    end
+    puts "cohort:"
     cohort = gets.chomp
+    puts "copuntry of origin:"
     c_o_o = gets.chomp
   end
   student
@@ -56,10 +62,11 @@ end
 def print_student_list_pretty(names)
   if names.empty?
     puts "There are no students to show!"
+  end
   names.each_with_index do |student, index|
-    print "#{index.to_s} ".center(4)
+    print "#{(index + 1).to_s} ".center(4)
     print "#{student[:name]}".center(30)
-    print "Height: #{student[:height]}".center(20)
+    print "Height: #{student[:country_of_origin]}".center(20)
     puts "#{student[:cohort]} cohort".center(20)
   end
 end
@@ -70,23 +77,26 @@ def print_footer(names)
 end
 
 def interactive_menu
+  students_array = []
   loop do
     # 1. print the menu and ask the user what to do
     puts "1. Add students"
     puts "2. Show student list"
     puts "9. Exit"
     # 2. read the input and save it into a variable
-    user_input = gets.chomp
+    selection = gets.chomp
     # 3. do what the user has asked
-    case user_input
+    case selection
       when "1"
-        add_student()
+        students_array = add_student()
       when "2"
+        print_header
         print_student_list_pretty(students_array)
+        print_footer(students_array)
+      when "9"
+        exit
+    end
+    puts "Why are you selecting things that arent on the menu do you have mannors?"
   end
 end
-
-# students_array = add_student
-print_header
-print_student_list(students_array)
-print_footer(students_array)
+interactive_menu
