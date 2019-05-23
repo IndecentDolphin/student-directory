@@ -4,22 +4,21 @@
 
 
 def add_student
-  student = []
   puts "enter names of students to add"
   puts "when finished hit return twice"
     name = gets.chomp
-  puts "what cohort"
+  puts "what cohort:"
     cohort = gets.chomp
-  puts "what is their country of origin"
-    c_o_o = gets.chomp
+  puts "height:"
+    height = gets.chomp
   while !name.empty? do
     if cohort.empty?
       cohort = "november"
-    elsif c_o_o.empty?
-      c_o_o = "N/A"
+    elsif height.empty?
+      height = "N/A"
     end
     cohort = cohort.to_sym
-    student << {name: name, cohort: cohort, country_of_origin: c_o_o}
+    @students_array << {name: name, cohort: cohort, height: height}
     puts "name:"
     name = gets.chomp
     if name.empty?
@@ -27,15 +26,14 @@ def add_student
     end
     puts "cohort:"
     cohort = gets.chomp
-    puts "copuntry of origin:"
-    c_o_o = gets.chomp
+    puts "height:"
+    height = gets.chomp
   end
-  student
 end
 
-def student_grouping(array)
+def student_grouping
   grouped_by_cohort = {}
-  array.each do |student|
+  @students_array.each do |student|
     cohort = student[:cohort]
     if grouped_by_cohort[cohort] == nil
       grouped_by_cohort[cohort] = []
@@ -59,11 +57,11 @@ def print_header
   puts "------------------------------------------------"
 end
 
-def print_student_list_pretty(names)
-  if names.empty?
+def print_student_list_pretty
+  if @students_array.empty?
     puts "There are no students to show!"
   end
-  names.each_with_index do |student, index|
+  @students_array.each_with_index do |student, index|
     print "#{(index + 1).to_s} ".center(4)
     print "#{student[:name]}".center(30)
     print "Height: #{student[:country_of_origin]}".center(20)
@@ -71,28 +69,36 @@ def print_student_list_pretty(names)
   end
 end
 
-def print_footer(names)
+def print_footer
   # Printing the total amount of students
-  puts "Overall, we have #{names.count} great students"
+  puts "Overall, we have #{@students_array.count} great students"
+end
+
+def print_menu
+  puts "1. Add students"
+  puts "2. Show student list"
+  puts "9. Exit"
+end
+
+def show_students
+  print_header
+  print_student_list_pretty
+  print_footer
 end
 
 def interactive_menu
-  students_array = []
+  @students_array = []
   loop do
     # 1. print the menu and ask the user what to do
-    puts "1. Add students"
-    puts "2. Show student list"
-    puts "9. Exit"
+    print_menu()
     # 2. read the input and save it into a variable
     selection = gets.chomp
     # 3. do what the user has asked
     case selection
       when "1"
-        students_array = add_student()
+        add_student()
       when "2"
-        print_header
-        print_student_list_pretty(students_array)
-        print_footer(students_array)
+        show_students()
       when "9"
         exit
     end
