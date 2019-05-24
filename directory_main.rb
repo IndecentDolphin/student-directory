@@ -1,15 +1,16 @@
 
 # TODO: rewrite the user input loop cause its a bit mad right now.
 # TODO: Remove extra stuff like height...
-
+# TODO: finally do the validation on user input for typos
+@students_array = []
 
 
 def add_student
   puts "enter names of students to add"
   puts "when finished hit return twice"
-    name = gets.chomp
+    name = STDIN.gets.chomp
   puts "what cohort:"
-    cohort = gets.chomp
+    cohort = STDIN.gets.chomp
   while !name.empty? do
     if cohort.empty?
       cohort = "november"
@@ -17,12 +18,12 @@ def add_student
     cohort = cohort.to_sym
     @students_array << {name: name, cohort: cohort}
     puts "name:"
-    name = gets.chomp
+    name = STDIN.gets.chomp
     if name.empty?
       break
     end
     puts "cohort:"
-    cohort = gets.chomp
+    cohort = STDIN.gets.chomp
   end
 end
 
@@ -116,8 +117,8 @@ def save_data
   puts "[FILE SAVED!]"
 end
 
-def load_data
-  file = File.open("students.csv", "r")
+def load_data(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(",")
     @students_array << {name: name, cohort: cohort.to_sym}
@@ -126,11 +127,23 @@ def load_data
   puts "[FILE LOADED!]"
 end
 
-def interactive_menu
-  @students_array = []
-  loop do
-    print_menu
-    process(gets.chomp)
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_data(filename)
+    puts "Loaded #{@students_array.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} doesnt exist."
+    exit
   end
 end
+
+def interactive_menu
+  loop do
+    print_menu
+    process(STDIN.gets.chomp)
+  end
+end
+try_load_students
 interactive_menu
