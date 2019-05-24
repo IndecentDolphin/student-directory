@@ -1,4 +1,4 @@
-
+require 'csv'
 # TODO: rewrite the user input loop cause its a bit mad right now.
 # TODO: Remove extra stuff like height...
 # TODO: finally do the validation on user input for typos
@@ -93,26 +93,26 @@ def process(selection)
 end
 
 def save_data(filename)
-  File.open(filename, "w") do |file|
-    # iterate over the students array
+  CSV.open(filename, "wb") do |csv|
+    # csv << ["row", "of", "CSV", "data"]
     @students_array.each do |student|
       student_data = [student[:name], student[:cohort]]
-      csv_line = student_data.join(",")
-      file.puts csv_line
+      csv_string = CSV.generate do |line|
+        csv << student_data
+      end
     end
   end
   puts "[FILE SAVED!]"
 end
 
 def load_data(filename = "students.csv")
-  File.open(filename, "r") do |file|
-    file.readlines.each do |line|
-      name, cohort = line.chomp.split(",")
-      populate_array(name, cohort)
-    end
+  CSV.foreach(filename) do |row|
+    name, cohort =  row
+    populate_array(name, cohort)
   end
   puts "[FILE LOADED!]"
 end
+
 
 def try_load_students
   filename = ARGV.first
