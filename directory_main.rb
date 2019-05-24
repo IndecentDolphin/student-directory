@@ -1,5 +1,6 @@
 
 # TODO: rewrite the user input loop cause its a bit mad right now.
+# TODO: Remove extra stuff like height...
 
 
 
@@ -9,16 +10,12 @@ def add_student
     name = gets.chomp
   puts "what cohort:"
     cohort = gets.chomp
-  puts "height:"
-    height = gets.chomp
   while !name.empty? do
     if cohort.empty?
       cohort = "november"
-    elsif height.empty?
-      height = "N/A"
     end
     cohort = cohort.to_sym
-    @students_array << {name: name, cohort: cohort, height: height}
+    @students_array << {name: name, cohort: cohort}
     puts "name:"
     name = gets.chomp
     if name.empty?
@@ -26,8 +23,6 @@ def add_student
     end
     puts "cohort:"
     cohort = gets.chomp
-    puts "height:"
-    height = gets.chomp
   end
 end
 
@@ -63,20 +58,26 @@ def print_student_list_pretty
   end
   @students_array.each_with_index do |student, index|
     print "#{(index + 1).to_s} ".center(4)
-    print "#{student[:name]}".center(30)
-    print "Height: #{student[:country_of_origin]}".center(20)
+    print "#{student[:name]}".center(10)
     puts "#{student[:cohort]} cohort".center(20)
   end
 end
 
 def print_footer
   # Printing the total amount of students
-  puts "Overall, we have #{@students_array.count} great students"
+  puts ""
+  # For Challenge 9
+  if @students_array.count > 1
+    puts "Overall, we have #{@students_array.count} great students"
+  else
+    puts "Overall, we have #{@students_array.count} great student"
+  end
 end
 
 def print_menu
   puts "1. Add students"
   puts "2. Show student list"
+  puts "3. Save students to file"
   puts "9. Exit"
 end
 
@@ -86,23 +87,37 @@ def show_students
   print_footer
 end
 
+def process(selection)
+  case selection
+    when "1"
+      add_student
+    when "2"
+      show_students
+    when "3"
+      save_data
+    when "9"
+      exit
+    else
+      puts "Why are you selecting things that arent on the menu do you have mannors?"
+  end
+end
+
+def save_data
+  file = File.open("students.csv", "w")
+  # iterate over the students array
+  @students_array.each do |student|
+    student_data = [student[:name], student[:cohort]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
+  puts "[FILE SAVED!]"
+end
+
 def interactive_menu
   @students_array = []
   loop do
-    # 1. print the menu and ask the user what to do
-    print_menu()
-    # 2. read the input and save it into a variable
-    selection = gets.chomp
-    # 3. do what the user has asked
-    case selection
-      when "1"
-        add_student()
-      when "2"
-        show_students()
-      when "9"
-        exit
-    end
-    puts "Why are you selecting things that arent on the menu do you have mannors?"
+    print_menu
+    process(gets.chomp)
   end
 end
 interactive_menu
