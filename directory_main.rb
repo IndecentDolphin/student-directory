@@ -4,6 +4,10 @@
 # TODO: finally do the validation on user input for typos
 @students_array = []
 
+def populate_array(name, cohort)
+  cohort.to_sym
+  @students_array << {name: name, cohort: cohort}
+end
 
 def add_student
   puts "enter names of students to add"
@@ -15,8 +19,7 @@ def add_student
     if cohort.empty?
       cohort = "november"
     end
-    cohort = cohort.to_sym
-    @students_array << {name: name, cohort: cohort}
+    populate_array(name, cohort)
     puts "name:"
     name = STDIN.gets.chomp
     if name.empty?
@@ -121,7 +124,7 @@ def load_data(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(",")
-    @students_array << {name: name, cohort: cohort.to_sym}
+    populate_array(name, cohort)
   end
   file.close
   puts "[FILE LOADED!]"
@@ -129,8 +132,9 @@ end
 
 def try_load_students
   filename = ARGV.first
-  return if filename.nil?
-  if File.exists?(filename)
+  if filename.nil?
+    load_data
+  elsif File.exists?(filename)
     load_data(filename)
     puts "Loaded #{@students_array.count} from #{filename}"
   else
