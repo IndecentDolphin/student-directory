@@ -78,6 +78,7 @@ def print_menu
   puts "1. Add students"
   puts "2. Show student list"
   puts "3. Save students to file"
+  puts "4. Load students from file"
   puts "9. Exit"
 end
 
@@ -95,6 +96,8 @@ def process(selection)
       show_students
     when "3"
       save_data
+    when "4"
+      load_data
     when "9"
       exit
     else
@@ -111,6 +114,16 @@ def save_data
     file.puts csv_line
   end
   puts "[FILE SAVED!]"
+end
+
+def load_data
+  file = File.open("students.csv", "r")
+  file.readlines.each do |line|
+    name, cohort = line.chomp.split(",")
+    @students_array << {name: name, cohort: cohort.to_sym}
+  end
+  file.close
+  puts "[FILE LOADED!]"
 end
 
 def interactive_menu
