@@ -16,9 +16,7 @@ def add_student
   puts "what cohort:"
     cohort = STDIN.gets.chomp
   while !name.empty? do
-    if cohort.empty?
-      cohort = "november"
-    end
+    cohort.empty? ? cohort = "November" : cohort
     populate_array(name, cohort)
     puts "name:"
     name = STDIN.gets.chomp
@@ -27,27 +25,6 @@ def add_student
     end
     puts "cohort:"
     cohort = STDIN.gets.chomp
-  end
-end
-
-def student_grouping
-  grouped_by_cohort = {}
-  @students_array.each do |student|
-    cohort = student[:cohort]
-    if grouped_by_cohort[cohort] == nil
-      grouped_by_cohort[cohort] = []
-    end
-    grouped_by_cohort[cohort].push(student[:name])
-  end
-  grouped_by_cohort.each do |key, value|
-    s_key = key.to_s
-    s_key.capitalize!
-    puts "----------------------"
-    puts "#{s_key} cohort".center(20)
-    puts "----------------------"
-    value.each do |name|
-      puts name.center(20)
-    end
   end
 end
 
@@ -70,7 +47,6 @@ end
 def print_footer
   # Printing the total amount of students
   puts ""
-  # For Challenge 9
   if @students_array.count > 1
     puts "Overall, we have #{@students_array.count} great students"
   else
@@ -99,34 +75,42 @@ def process(selection)
     when "2"
       show_students
     when "3"
-      save_data
+      puts "Save as?"
+      filename = STDIN.gets.chomp
+      save_data(filename)
     when "4"
-      load_data
+      puts "Open which file..."
+      filename = STDIN.gets.chomp
+      load_data(filename)
     when "9"
+      puts "Clearing cache..."
       exit
     else
+      puts "----------------------------------"
       puts "Why are you selecting things that arent on the menu do you have mannors?"
+      puts "----------------------------------"
   end
 end
 
-def save_data
-  file = File.open("students.csv", "w")
-  # iterate over the students array
-  @students_array.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+def save_data(filename)
+  File.open(filename, "w") do |file|
+    # iterate over the students array
+    @students_array.each do |student|
+      student_data = [student[:name], student[:cohort]]
+      csv_line = student_data.join(",")
+      file.puts csv_line
+    end
   end
   puts "[FILE SAVED!]"
 end
 
 def load_data(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    name, cohort = line.chomp.split(",")
-    populate_array(name, cohort)
+  File.open(filename, "r") do |file|
+    file.readlines.each do |line|
+      name, cohort = line.chomp.split(",")
+      populate_array(name, cohort)
+    end
   end
-  file.close
   puts "[FILE LOADED!]"
 end
 
@@ -149,5 +133,6 @@ def interactive_menu
     process(STDIN.gets.chomp)
   end
 end
+
 try_load_students
 interactive_menu
