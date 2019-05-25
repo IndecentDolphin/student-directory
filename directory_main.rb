@@ -1,7 +1,4 @@
 require 'csv'
-# TODO: rewrite the user input loop cause its a bit mad right now.
-# TODO: Remove extra stuff like height...
-# TODO: finally do the validation on user input for typos
 @students_array = []
 
 def populate_array(name, cohort)
@@ -94,7 +91,6 @@ end
 
 def save_data(filename)
   CSV.open(filename, "wb") do |csv|
-    # csv << ["row", "of", "CSV", "data"]
     @students_array.each do |student|
       student_data = [student[:name], student[:cohort]]
       csv_string = CSV.generate do |line|
@@ -133,6 +129,7 @@ def interactive_menu
     process(STDIN.gets.chomp)
   end
 end
+
 
 try_load_students
 interactive_menu
